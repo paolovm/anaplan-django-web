@@ -257,11 +257,12 @@ Os modelos atuais (`Modelo`, `ProcessList`, `Execucao`, etc.) viram **escopados 
 
 ## 10. Roadmap por fases (milestones)
 
-### Fase 0 — Fundação (1–2 semanas)
-- [ ] Sanear segredos (env vars, `.env.example`, `.gitignore`, rotação de senhas).
-- [ ] `requirements.txt` pinado; subir Django 3.1 → **5.2 LTS**; trocar SQLite→Postgres (dev).
-- [ ] Remover acoplamentos do cliente (e-mail/SMTP/caminho/logo → configuração).
-- [ ] Dockerizar; CI básica (lint + testes).
+### Fase 0 — Fundação ✅ (entregue — resta só você rotacionar as senhas reais)
+- [x] Sanear segredos (env vars via `django-environ`, `.env.example`, `.gitignore`).
+      ⚠️ **Rotação das senhas reais = ação sua** — elas continuam no histórico do git.
+- [x] `requirements.txt` pinado; Django 3.1 → **5.2.14**; Postgres habilitado via `DATABASE_URL`/compose.
+- [x] Remover acoplamentos do cliente (e-mail/SMTP/caminho/logo → configuração; `PRODUCT_NAME`).
+- [x] Dockerizar (`Dockerfile`, `docker-compose.yml`); CI básica (GitHub Actions: check, migrações, testes).
 
 ### Fase 1 — MVP multi-tenant (3–5 semanas)
 - [ ] Modelo `Organizacao` + escopo por tenant em todos os modelos.
