@@ -1,11 +1,58 @@
-# Roadmap de Produtização — Conector Anaplan (FlexThink)
+# Roadmap de Produtização — Conector para Plataformas de Planejamento (FlexThink)
 
 > Documento-guia para transformar a ferramenta interna **anaplan-django-web**
 > (hoje mono-cliente) em um **produto** da FlexThink.
 > Escrito a partir da leitura do código atual. Use como referência viva — atualize a cada fase.
 
 **Status atual:** ferramenta interna, mono-tenant, acoplada a um cliente (Forno de Minas).
-**Objetivo:** produto multi-tenant, seguro, implantável e comercializável.
+**Objetivo:** produto **self-service** multi-tenant que também alimenta a consultoria da FlexThink — ver **Norte**, logo abaixo.
+
+---
+
+## ✦ Norte — Visão e objetivo comercial
+
+**Estrela-guia:**
+> Ser a forma mais simples de uma equipe de planejamento/FP&A **carregar e integrar dados na sua
+> plataforma de planejamento** — começando pelo **Anaplan** e, em seguida,
+> **IBM Planning Analytics (TM1)** — de modo **self-service**, sem virar um projeto de TI.
+
+**Papel estratégico (duplo).** O produto é, ao mesmo tempo:
+1. **Produto self-service** com receita recorrente, que se sustenta sozinho; e
+2. **Motor de novos clientes e diferencial** para a consultoria da FlexThink.
+
+Em uma etiqueta: **"product-led, consulting-assisted"** — o cliente entra sozinho pelo produto e,
+quando o caso aperta (modelo complexo, migração, integração pesada), há uma trilha clara para os
+**serviços da FlexThink**. O produto abre a porta; a consultoria expande a conta.
+
+**Mercado e sequência:**
+- **V1 — Anaplan** (cunha afiada: mensagem clara, concorrência conhecida).
+- **V2 — IBM Planning Analytics / TM1** (mesma "forma" de problema: carregar dados em cubos/módulos).
+- O destino **não** é "ETL genérico" — é **integração de dados para plataformas de planejamento**,
+  no terreno onde a FlexThink já tem autoridade.
+
+**Modelo de entrega e cobrança:**
+- **SaaS self-service:** trial → assinatura, onboarding de baixa fricção, sem implementação obrigatória.
+- **Precificação:** assinatura recorrente (por conexão / plataforma / volume); serviços da FlexThink
+  como **upsell opcional**.
+
+**Consequências que entram no roadmap:**
+- **Self-service ⇒** produto polido + onboarding guiado + documentação. A primeira impressão
+  **é a marca da FlexThink** — não dá para entregar "meia-boca".
+- **Multi-plataforma ⇒ arquitetura de adaptadores** desde já: núcleo comum + um conector por
+  plataforma (Anaplan é o primeiro; TM1 entra sem reescrever). Ver §4.3.
+- **Lead-gen ⇒** instrumentar o uso para o comercial (sinais de cliente quente) e desenhar a ponte
+  **produto → serviço**.
+
+**Não-metas (para manter o foco):** não virar ETL genérico estilo Fivetran · não exigir
+implementação paga para usar o básico · não competir por preço com integradores enterprise.
+
+**Marcos de destino** (preencher os números junto com você):
+
+| Horizonte | "Chegamos lá" quando… |
+|-----------|------------------------|
+| 6–12 meses | V1 Anaplan no ar; **N** clientes self-service pagantes **e** **M** leads de consultoria originados pelo produto |
+| 12–24 meses | Adaptador Planning Analytics no ar; MRR cobrindo o custo de operação; conversão produto→serviço repetível |
+| 36+ meses | Referência em integração de dados para plataformas de planejamento no mercado da FlexThink |
 
 ---
 
@@ -119,9 +166,11 @@ Os modelos atuais (`Modelo`, `ProcessList`, `Execucao`, etc.) viram **escopados 
 - **Trocar Basic Auth** por **OAuth 2.0** ou **certificado (service account)**:
   - Basic Auth exige rotação de senha (30–90 dias) → inviável para produto.
   - Tokens Anaplan duram ~30–35 min → implementar **refresh automático** e cache de token.
-- Abstrair num módulo `anaplan/client.py` com interface única
-  (`authenticate`, `upload_file`, `run_action`, `get_status`) e testes — substituindo o
-  wrapper atual.
+- **Arquitetura de adaptadores (decorre do Norte):** definir uma interface única de
+  "conector de plataforma" (`authenticate`, `upload_file`, `run_action`, `get_status`) e
+  implementar o **Anaplan como primeiro adaptador** (ex.: `connectors/anaplan.py`),
+  substituindo o wrapper atual. O segundo adaptador — **IBM Planning Analytics / TM1**
+  (via `TM1py`/REST) — entra **sem reescrever o núcleo**. Cada adaptador é testável isoladamente.
 
 ### 4.4 Arquivos
 - Entrada por **upload web/API** ou **storage em nuvem** (S3/Blob/GCS), não pasta local Windows.
@@ -216,7 +265,7 @@ Os modelos atuais (`Modelo`, `ProcessList`, `Execucao`, etc.) viram **escopados 
 
 ### Fase 1 — MVP multi-tenant (3–5 semanas)
 - [ ] Modelo `Organizacao` + escopo por tenant em todos os modelos.
-- [ ] `ConexaoAnaplan` com credenciais **cifradas**; cliente Anaplan abstraído + token cache.
+- [ ] `ConexaoAnaplan` com credenciais **cifradas**; **Anaplan como primeiro adaptador** (interface de conector) + token cache.
 - [ ] Upload de arquivos + envio **em chunks**; execução via job assíncrono (Celery).
 - [ ] Autenticação de usuários + papéis; log de auditoria por tenant.
 
@@ -227,6 +276,7 @@ Os modelos atuais (`Modelo`, `ProcessList`, `Execucao`, etc.) viram **escopados 
 - [ ] Onboarding de tenant + documentação; revisão de segurança e LGPD.
 
 ### Fase 3 — GA / escala (contínuo)
+- [ ] **2º adaptador: IBM Planning Analytics / TM1** (via `TM1py`) — expansão de mercado prevista no Norte.
 - [ ] SSO (SAML/OIDC), billing, SLAs, painel de operação interna.
 - [ ] Hardening, testes de carga, DR, certificações conforme demanda enterprise.
 
