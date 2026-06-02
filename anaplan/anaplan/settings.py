@@ -17,8 +17,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Configuração por ambiente
 # ---------------------------------------------------------------------------
 env = environ.Env()
-# Lê um arquivo .env na raiz do projeto, se existir (não é obrigatório).
-environ.Env.read_env(BASE_DIR / ".env")
+# Lê o arquivo .env da raiz do repositório (ao lado do .env.example), se existir.
+environ.Env.read_env(BASE_DIR.parent / ".env")
 
 # SECURITY WARNING: defina DJANGO_SECRET_KEY no ambiente em produção!
 # Gere uma nova com:
