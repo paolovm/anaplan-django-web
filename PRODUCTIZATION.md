@@ -156,7 +156,7 @@ Os modelos atuais (`Modelo`, `ProcessList`, `Execucao`, etc.) viram **escopados 
 
 | Item | Hoje | Alvo |
 |------|------|------|
-| Django | 3.1 (EOL) | **4.2 LTS** ou 5.x |
+| Django | 3.1 (EOL) | **5.2 LTS** (a 4.2 chegou ao fim de vida em abr/2026; suporte da 5.2 até 2028) |
 | Banco | SQLite | **PostgreSQL** |
 | Dependências | nenhuma travada | `requirements.txt` / Poetry **pinado** |
 | Config | hardcoded | **env vars** (`django-environ`) + `.env.example` |
@@ -210,7 +210,7 @@ Os modelos atuais (`Modelo`, `ProcessList`, `Execucao`, etc.) viram **escopados 
 
 ### Fase 0 — Fundação (1–2 semanas)
 - [ ] Sanear segredos (env vars, `.env.example`, `.gitignore`, rotação de senhas).
-- [ ] `requirements.txt` pinado; subir Django para 4.2 LTS; trocar SQLite→Postgres (dev).
+- [ ] `requirements.txt` pinado; subir Django 3.1 → **5.2 LTS**; trocar SQLite→Postgres (dev).
 - [ ] Remover acoplamentos do cliente (e-mail/SMTP/caminho/logo → configuração).
 - [ ] Dockerizar; CI básica (lint + testes).
 
