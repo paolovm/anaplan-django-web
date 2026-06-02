@@ -50,3 +50,15 @@ Thumbs.db
 
 #Pacotes
 DEV
+
+# Python / Django
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.env
+*.sqlite3
+staticfiles/
+import_files/
+media/

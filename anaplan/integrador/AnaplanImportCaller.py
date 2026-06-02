@@ -1,31 +1,17 @@
+from django.conf import settings
+
 import integrador.PyTools.dataAcquisition as dtAquisicao
-import pathlib 
-from integrador.util import ler_arquivos_pasta, mover_arquivos
-from django.contrib.auth.models import User
 
 
-#def envio_anaplan(model, diretorio, processList):
 def envio_anaplan(model, diretorio, processList, dataList):
-   
-    usuario_anaplan = User.objects.get(groups__name='Acesso Anaplan')
-    model = model
-    user="paolo.malafaia@flexthink.com.au"
-    pwd = "Number28"
-    #user = usuario_anaplan.username
-    #pwd = usuario_anaplan.password
+    """Envia os arquivos para o Anaplan usando a credencial configurada.
 
-    diretorio_script = pathlib.Path(__file__).parent.absolute()
+    NOTA: credencial única vinda das settings (mono-tenant). Será substituída
+    pelo cofre de credenciais por tenant na Fase 1 do roadmap de produtização.
+    """
+    user = settings.ANAPLAN_EMAIL
+    pwd = settings.ANAPLAN_PASSWORD
 
-    pasta_in = diretorio
-    #pasta_out = diretorio + '/OUT/'
+    importList = []
 
-    dataList = dataList
-    #dataList = ler_arquivos_pasta(pasta_in) ANTIGO
-
-    importList =\
-    [
-    ]
-
-    processList=processList
     dtAquisicao.main(user, pwd, model, dataList, importList, processList)
-    #mover_arquivos(pasta_in, pasta_out)

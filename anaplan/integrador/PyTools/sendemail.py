@@ -1,44 +1,24 @@
-import smtplib, ssl
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.base import MIMEBase
+"""Notificações de status de carga via o backend de e-mail do Django.
 
-def sendEmail(subject="Anaplan Status Non Defined",status="Unspecified Error"):
-    #receivers="paolovm@gmail.com,marcia_borges@fornodeminas.com.br"
-    receivers="cleber.carmo@fornodeminas.com.br;rcleber@outlook.com.br"
+Host, porta, credenciais, remetente e destinatários vêm das settings/ambiente
+(EMAIL_*, DEFAULT_FROM_EMAIL, ANAPLAN_NOTIFY_RECIPIENTS). Nenhum segredo no código.
+"""
+import logging
 
-    sender = 'anaplan@fornodeminas.com.br'
-    password = 'Fdm1nf0rm4t1c4@2020'
+from django.conf import settings
+from django.core.mail import send_mail
 
-    #sender = 'fdmplanning@gmail.com'
-    #password = 'Fdmpla2021'
-  
-    port=1025
-    port = 465 
-    context = ssl.create_default_context()
-
-    msg = MIMEMultipart()
-    msg['Subject'] = subject
-    msg['From'] = sender
-    msg['To'] = receivers
-    msg.attach(MIMEText(status))
-
-#    with smtplib.SMTP('localhost', port) as server:
+logger = logging.getLogger(__name__)
 
 
-    with smtplib.SMTP_SSL("mail.fornodeminas.com.br", port, context=context) as server:
-        try:
+def sendEmail(subject="Anaplan Status", status="Status não especificado"):
+    recipients = settings.ANAPLAN_NOTIFY_RECIPIENTS
+    if not recipients or not settings.EMAIL_HOST:
+        logger.info("Notificação por e-mail ignorada (sem destinatários ou EMAIL_HOST configurado).")
+        return
 
-            server.login("anaplan", password)
-            server.sendmail(sender, receivers, msg.as_string())
-            print(status)
-            print("Successfully sent email")
-        except Exception as err:
-            print(err)
-
-    
-
-
-if __name__ == '__main__':
-    sendEmail()
-
+    try:
+        send_mail(subject, status, settings.DEFAULT_FROM_EMAIL, recipients, fail_silently=False)
+        logger.info("E-mail de notificação enviado: %s", subject)
+    except Exception:
+        logger.exception("Falha ao enviar e-mail de notificação")

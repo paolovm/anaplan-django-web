@@ -1,0 +1,13 @@
+# Dependências do produto (pinadas). Gere um lock completo com pip-tools/poetry na Fase 1.
+
+# Núcleo
+Django==5.2.14
+django-environ==0.13.0
+django-select2==8.4.8
+requests==2.34.2
+
+# Banco de dados (produção)
+psycopg[binary]~=3.2
+
+# Servidor de aplicação (produção / Docker)
+gunicorn~=23.0

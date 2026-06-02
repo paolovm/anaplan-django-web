@@ -1,3 +1,6 @@
+import os
+
+from django.conf import settings
 from django.contrib import admin
 from .models import *
 from django.forms import TextInput, Textarea
@@ -63,7 +66,8 @@ class ExecucaoAdmin(admin.ModelAdmin):
                 #d_process_list.clear()
                 #l_process_list = []
             for arquivos in ParametrosExecucao.objects.filter(execucao=obj):
-                l_arquivos.append([arquivos.arquivo_anaplan, 'C:\\Temp\IN\\' + arquivos.arquivo_forno])
+                caminho = os.path.join(settings.ANAPLAN_IMPORT_DIR, arquivos.arquivo_forno)
+                l_arquivos.append([arquivos.arquivo_anaplan, caminho])
             #print(getatt[r(obj, "id"))
             #print([getattr(obj, field) for field in field_names])
             envio_anaplan(s_modelo, obj.pasta_arquivos, l_process_list_final, l_arquivos)

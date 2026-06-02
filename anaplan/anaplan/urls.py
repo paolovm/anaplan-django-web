@@ -13,8 +13,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
+
+admin.site.site_header = settings.PRODUCT_NAME
+admin.site.site_title = settings.PRODUCT_NAME
+admin.site.index_title = settings.PRODUCT_NAME
 
 urlpatterns = [
     path('anaplan/', admin.site.urls),
